@@ -5,6 +5,28 @@ import Turf
 {{accessibility}}protocol {{collectionsContainerProtocolName}} { }
 extension {{containerTypeName}}: {{collectionsContainerProtocolName}} { }
 
+{{accessibility}}class {{readOnlyContainerTypeName}} {
+{{# collections }}
+    {{accessibility}}lazy var {{name}}: ReadCollection<{{typeName}}> = {
+        [unowned self] in
+        return ReadCollection(collection: self.collections.{{name}}, transaction: self.transaction)
+    }()
+{{/ collections }}
+
+    {{accessibility}}let transaction: ReadTransaction
+
+    // MARK: Private properties
+
+    private let collections: {{containerTypeName}}
+
+    // MARK: Object lifecycle
+
+    {{accessibility}}init(transaction: ReadTransaction, collections: {{collectionsContainerProtocolName}}) {
+        self.transaction = transaction
+        self.collections = collections as! {{containerTypeName}}
+    }
+}
+
 {{accessibility}}class {{readWriteContainerTypeName}} {
 {{# collections }}
     {{accessibility}}lazy var {{name}}: ReadWriteCollection<{{typeName}}> = {
@@ -28,10 +50,17 @@ extension {{containerTypeName}}: {{collectionsContainerProtocolName}} { }
 }
 
 extension Connection where DatabaseCollections: {{collectionsContainerProtocolName}} {
-    func readWrite(closure: ({{readWriteContainerTypeName}}) -> Void) {
-        readWriteTransaction { (transaction) in
+    func readOnly(closure: ({{readOnlyContainerTypeName}}) -> Void) throws {
+        try readTransaction { (transaction) in
+            let readOnlyCollections = {{readOnlyContainerTypeName}}(transaction: transaction, collections: self.collections)
+            closure(readOnlyCollections)
+        }
+    }
+
+    func readWrite(closure: ({{readWriteContainerTypeName}}) throws -> Void) throws {
+        try readWriteTransaction { (transaction) in
             let readWriteCollections = {{readWriteContainerTypeName}}(transaction: transaction, collections: self.collections)
-            closure(readWriteCollections)
+            try closure(readWriteCollections)
         }
     }
 }
