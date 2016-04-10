@@ -1,7 +1,8 @@
+import Mustache
 import SourceKittenFramework
 
 class CollectionsContainerTransformer {
-//    static let template = try! Template(named: "ReadWrite")
+    static let template = try! Template(named: "ReadWrite")
 
     class func transform(collectionsContainer: ClassSubstructure, turfCollectionUsrs: [String], accessibility: String) -> String {
         let containerName = collectionsContainer.name
@@ -10,6 +11,7 @@ class CollectionsContainerTransformer {
             "version": "0.1.0",
             "containerTypeName": containerName,
             "readWriteContainerTypeName": "ReadWrite\(containerName.uppercaseFirst)",
+            "readOnlyContainerTypeName": "ReadOnly\(containerName.uppercaseFirst)",
             "accessibility": "\(accessibility) ",
             // Extensions cannot be constrained to concrete types, only protocols. "Same-type requirement makes generic parameter non-generic"
             "collectionsContainerProtocolName": "_Turf\(containerName.uppercaseFirst)",
@@ -23,9 +25,7 @@ class CollectionsContainerTransformer {
         }
 
         templateVariables["collections"] = collections
-//        print(try! template.render(Box(templateVariables)))
-        print(templateVariables)
-        return ""
+        return try! template.render(Box(templateVariables))
     }
 }
 
