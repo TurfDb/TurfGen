@@ -10,30 +10,18 @@ import Foundation
 import SourceKittenFramework
 import XCTest
 
-func compareJSONStringWithFixturesName(name: String, jsonString: CustomStringConvertible, rootDirectory: String = fixturesDirectory) {
+func compareJSONStringWithFixturesName(name: String, jsonString: String) {
     func jsonValue(jsonString: String) -> AnyObject {
         let data = jsonString.dataUsingEncoding(NSUTF8StringEncoding)!
         let result = try! NSJSONSerialization.JSONObjectWithData(data, options: [])
         return (result as? NSDictionary) ?? (result as! NSArray)
     }
-    let escapedFixturesDirectory = rootDirectory.stringByReplacingOccurrencesOfString("/", withString: "\\/")
-    let actualContent = String(jsonString).stringByReplacingOccurrencesOfString(escapedFixturesDirectory, withString: "")
-
-    let fixturePath = fixturesDirectory + name + ".json"
-    let expectedContent = File(path: fixturePath)!.contents
-
-    let overwrite = false
-    if overwrite && actualContent != expectedContent {
-        _ = try? actualContent.dataUsingEncoding(NSUTF8StringEncoding)?.writeToFile(fixturePath, options: .AtomicWrite)
-        return
-    }
-
-    let actualValue = jsonValue(actualContent)
-    let expectedValue = jsonValue(expectedContent)
+    let firstValue = jsonValue(jsonString)
+    let secondValue = jsonValue(File(path: fixturesDirectory + name + ".json")!.contents)
     let message = "output should match expected fixture"
-    if let firstValue = actualValue as? NSDictionary, secondValue = expectedValue as? NSDictionary {
+    if let firstValue = firstValue as? NSDictionary, secondValue = secondValue as? NSDictionary {
         XCTAssertEqual(firstValue, secondValue, message)
-    } else if let firstValue = actualValue as? NSArray, secondValue = expectedValue as? NSArray {
+    } else if let firstValue = firstValue as? NSArray, secondValue = secondValue as? NSArray {
         XCTAssertEqual(firstValue, secondValue, message)
     } else {
         XCTFail("output didn't match fixture type")
@@ -43,7 +31,10 @@ func compareJSONStringWithFixturesName(name: String, jsonString: CustomStringCon
 func compareDocsWithFixturesName(name: String) {
     let swiftFilePath = fixturesDirectory + name + ".swift"
     let docs = SwiftDocs(file: File(path: swiftFilePath)!, arguments: ["-j4", swiftFilePath])!
-    compareJSONStringWithFixturesName(name, jsonString: docs)
+
+    let escapedFixturesDirectory = fixturesDirectory.stringByReplacingOccurrencesOfString("/", withString: "\\/")
+    let comparisonString = String(docs).stringByReplacingOccurrencesOfString(escapedFixturesDirectory, withString: "")
+    compareJSONStringWithFixturesName(name, jsonString: comparisonString)
 }
 
 class SwiftDocsTests: XCTestCase {

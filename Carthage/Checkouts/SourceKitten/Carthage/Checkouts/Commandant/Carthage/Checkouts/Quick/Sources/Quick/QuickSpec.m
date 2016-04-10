@@ -58,11 +58,8 @@ const void * const QCKExampleKey = &QCKExampleKey;
 + (NSArray *)testInvocations {
     NSArray *examples = [[World sharedWorld] examplesForSpecClass:[self class]];
     NSMutableArray *invocations = [NSMutableArray arrayWithCapacity:[examples count]];
-    
-    NSMutableSet<NSString*> *selectorNames = [NSMutableSet set];
-    
     for (Example *example in examples) {
-        SEL selector = [self addInstanceMethodForExample:example classSelectorNames:selectorNames];
+        SEL selector = [self addInstanceMethodForExample:example];
         NSInvocation *invocation = [self invocationForInstanceMethodWithSelector:selector
                                                                          example:example];
         [invocations addObject:invocation];
@@ -103,7 +100,7 @@ const void * const QCKExampleKey = &QCKExampleKey;
 
  @return The selector of the newly defined instance method.
  */
-+ (SEL)addInstanceMethodForExample:(Example *)example classSelectorNames:(NSMutableSet<NSString*> *)selectorNames {
++ (SEL)addInstanceMethodForExample:(Example *)example {
     IMP implementation = imp_implementationWithBlock(^(QuickSpec *self){
         currentSpec = self;
         [example run];
@@ -118,17 +115,10 @@ const void * const QCKExampleKey = &QCKExampleKey;
     }
 
     const char *types = [[NSString stringWithFormat:@"%s%s%s", @encode(id), @encode(id), @encode(SEL)] UTF8String];
-    
-    NSString *originalName = example.name.qck_selectorName;
-    NSString *selectorName = originalName;
-    NSUInteger i = 2;
-    
-    while ([selectorNames containsObject:selectorName]) {
-        selectorName = [NSString stringWithFormat:@"%@_%tu", originalName, i++];
-    }
-    
-    [selectorNames addObject:selectorName];
-    
+    NSString *selectorName = [NSString stringWithFormat:@"%@_%@_%ld",
+                              example.name.qck_selectorName,
+                              sanitizedFileName,
+                              (long)example.callsite.line];
     SEL selector = NSSelectorFromString(selectorName);
     class_addMethod(self, selector, implementation, types);
 

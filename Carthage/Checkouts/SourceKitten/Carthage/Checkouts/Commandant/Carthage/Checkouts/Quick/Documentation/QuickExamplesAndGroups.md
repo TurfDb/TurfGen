@@ -43,8 +43,8 @@ class DolphinSpec: QuickSpec {
 ```objc
 // Objective-C
 
-@import Quick;
-@import Nimble;
+#import <Quick/Quick.h>
+#import <Nimble/Nimble.h>
 
 QuickSpecBegin(DolphinSpec)
 
@@ -103,8 +103,8 @@ class DolphinSpec: QuickSpec {
 ```objc
 // Objective-C
 
-@import Quick;
-@import Nimble;
+#import <Quick/Quick.h>
+#import <Nimble/Nimble.h>
 
 QuickSpecBegin(DolphinSpec)
 
@@ -178,8 +178,8 @@ class DolphinSpec: QuickSpec {
 ```objc
 // Objective-C
 
-@import Quick;
-@import Nimble;
+#import <Quick/Quick.h>
+#import <Nimble/Nimble.h>
 
 QuickSpecBegin(DolphinSpec)
 
@@ -267,8 +267,8 @@ class DolphinSpec: QuickSpec {
 ```objc
 // Objective-C
 
-@import Quick;
-@import Nimble;
+#import <Quick/Quick.h>
+#import <Nimble/Nimble.h>
 
 QuickSpecBegin(DolphinSpec)
 
@@ -439,7 +439,7 @@ class DolphinSpec: QuickSpec {
 ```objc
 // Objective-C
 
-@import Quick;
+#import <Quick/Quick.h>
 
 QuickSpecBegin(DolphinSpec)
 

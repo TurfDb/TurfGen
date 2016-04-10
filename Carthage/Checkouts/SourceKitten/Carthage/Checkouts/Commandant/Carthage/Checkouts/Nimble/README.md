@@ -387,19 +387,6 @@ pollution for whatever incomplete code that was running on the main thread.
 Blocking the main thread can be caused by blocking IO, calls to sleep(),
 deadlocks, and synchronous IPC.
 
-In some cases (e.g. when running on slower machines) it can be useful to modify
-the default timeout and poll interval values. This can be done as follows:
-
-```swift
-// Swift
-
-// Increase the global timeout to 5 seconds:
-Nimble.Defaults.AsyncTimeout = 5
-
-// Slow the polling interval to 0.1 seconds:
-Nimble.Defaults.AsyncPollInterval = 0.1
-```
-
 ## Objective-C Support
 
 Nimble has full support for Objective-C. However, there are two things
@@ -1162,7 +1149,7 @@ install just Nimble.
 
 To use Nimble in CocoaPods to test your iOS or OS X applications, add Nimble to
 your podfile and add the ```use_frameworks!``` line to enable Swift support for
-CocoaPods.
+Cocoapods.
 
 ```ruby
 platform :ios, '8.0'
@@ -1173,7 +1160,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 target 'YOUR_APP_NAME_HERE_Tests', :exclusive => true do
   use_frameworks!
-  pod 'Nimble', '~> 3.1.0'
+  pod 'Nimble', '~> 3.0.0'
 end
 ```
 

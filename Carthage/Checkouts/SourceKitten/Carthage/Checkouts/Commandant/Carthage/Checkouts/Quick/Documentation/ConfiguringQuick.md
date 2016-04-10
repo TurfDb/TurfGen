@@ -18,7 +18,7 @@ class ProjectDataTestConfiguration: QuickConfiguration {
 ```objc
 // Objective-C
 
-@import Quick;
+#import <Quick/Quick.h>
 
 QuickConfigurationBegin(ProjectDataTestConfiguration)
 
@@ -55,7 +55,7 @@ class FinConfiguration: QuickConfiguration {
 ```objc
 // Objective-C
 
-@import Quick;
+#import <Quick/Quick.h>
 #import "Dorsal.h"
 
 QuickConfigurationBegin(FinConfiguration)
@@ -89,7 +89,7 @@ class SeaConfiguration: QuickConfiguration {
 ```objc
 // Objective-C
 
-@import Quick;
+#import <Quick/Quick.h>
 
 QuickConfigurationBegin(SeaConfiguration)
 

@@ -9,3 +9,6 @@
 
 // Apply common settings specific to watchOS
 #include "watchOS-Base.xcconfig"
+
+// Supported device families
+TARGETED_DEVICE_FAMILY = 4

@@ -55,8 +55,8 @@ class CodSpec: QuickSpec {
 ```objc
 // Objective-C
 
-@import Quick;
-@import Nimble;
+#import <Quick/Quick.h>
+#import <Nimble/Nimble.h>
 
 QuickConfigurationBegin(EdibleSharedExamplesConfiguration)
 

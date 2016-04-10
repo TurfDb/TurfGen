@@ -160,12 +160,16 @@ extension World {
     }
 
     private var currentPhase: String {
-        if beforesCurrentlyExecuting {
-            return "beforeEach"
-        } else if aftersCurrentlyExecuting {
-            return "afterEach"
+        if currentExampleMetadata != nil {
+            if beforesCurrentlyExecuting {
+                return "beforeEach"
+            } else if aftersCurrentlyExecuting {
+                return "afterEach"
+            }
+
+            return "it"
         }
 
-        return "it"
+        return ""
     }
 }

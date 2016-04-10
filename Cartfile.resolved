@@ -1,2 +1,3 @@
-github "drmohundro/SWXMLHash" "2.2.0"
-github "TurfDb/SourceKitten" "6e78cbca2f09531a06ad7e9cd1d6fcb563188c6c"
+github "groue/GRMustache.swift" "1.0.0"
+github "drmohundro/SWXMLHash" "2.3.1"
+github "jpsim/SourceKitten" "0.12.0"

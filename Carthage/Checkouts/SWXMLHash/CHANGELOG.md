@@ -1,3 +1,13 @@
+## v2.3.0 (April 9, 2016)
+
+* Added built-in bool support for deserialization.
+  * See corresponding [issue #70](https://github.com/drmohundro/SWXMLHash/issues/70) and [pull request #71](https://github.com/drmohundro/SWXMLHash/pull/71).
+
+## v2.2.0 (March 23, 2016)
+
+* Added deserialization / type transformer support.
+  * See corresponding [issue #10](https://github.com/drmohundro/SWXMLHash/issues/10) and [pull request #68](https://github.com/drmohundro/SWXMLHash/pull/68).
+
 ## v2.1.0 (January 27, 2016)
 
 * Changed how text elements are parsed - instead of string concatenation, they're now added as first class `TextElement` instances.
