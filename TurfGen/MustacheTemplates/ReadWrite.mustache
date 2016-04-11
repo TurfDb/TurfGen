@@ -7,60 +7,52 @@ extension {{containerTypeName}}: {{collectionsContainerProtocolName}} { }
 
 {{accessibility}}class {{readOnlyContainerTypeName}} {
 {{# collections }}
-    {{accessibility}}lazy var {{name}}: ReadCollection<{{typeName}}> = {
+    {{accessibility}}lazy var {{name}}: ReadCollection<{{typeName}}, {{containerTypeName}}> = {
         [unowned self] in
-        return ReadCollection(collection: self.collections.{{name}}, transaction: self.transaction)
+        return self.transaction.readOnly(self.transaction.collections.{{name}})
     }()
 {{/ collections }}
 
-    {{accessibility}}let transaction: ReadTransaction
-
-    // MARK: Private properties
-
-    private let collections: {{containerTypeName}}
+    {{accessibility}}let transaction: ReadTransaction<{{containerTypeName}}>
 
     // MARK: Object lifecycle
 
-    {{accessibility}}init(transaction: ReadTransaction, collections: {{collectionsContainerProtocolName}}) {
+    private init(transaction: ReadTransaction<{{containerTypeName}}>) {
         self.transaction = transaction
-        self.collections = collections as! {{containerTypeName}}
     }
 }
+
 
 {{accessibility}}class {{readWriteContainerTypeName}} {
 {{# collections }}
-    {{accessibility}}lazy var {{name}}: ReadWriteCollection<{{typeName}}> = {
-            [unowned self] in
-            return ReadWriteCollection(collection: self.collections.{{name}}, transaction: self.transaction)
-        }()
+    {{accessibility}}lazy var {{name}}: ReadWriteCollection<{{typeName}}, {{containerTypeName}}> = {
+        [unowned self] in
+        return self.transaction.readWrite(self.transaction.collections.{{name}})
+    }()
 {{/ collections }}
 
-    {{accessibility}}let transaction: ReadWriteTransaction
-
-    // MARK: Private properties
-
-    private let collections: {{containerTypeName}}
+    {{accessibility}}let transaction: ReadWriteTransaction<{{containerTypeName}}>
 
     // MARK: Object lifecycle
 
-    {{accessibility}}init(transaction: ReadWriteTransaction, collections: {{collectionsContainerProtocolName}}) {
+    private init(transaction: ReadWriteTransaction<{{containerTypeName}}>) {
         self.transaction = transaction
-        self.collections = collections as! {{containerTypeName}}
     }
 }
 
-extension Connection where DatabaseCollections: {{collectionsContainerProtocolName}} {
-    func readOnly(closure: ({{readOnlyContainerTypeName}}) -> Void) throws {
-        try readTransaction { (transaction) in
-            let readOnlyCollections = {{readOnlyContainerTypeName}}(transaction: transaction, collections: self.collections)
+extension Connection where Collections: {{collectionsContainerProtocolName}} {
+    {{accessibility}}func readOnly(closure: {{readOnlyContainerTypeName}} -> Void) throws {
+        try readTransaction { transaction, collections in
+            let readOnlyCollections = {{readOnlyContainerTypeName}}(transaction: (transaction as? ReadTransaction<{{containerTypeName}}>)!)
             closure(readOnlyCollections)
         }
     }
 
-    func readWrite(closure: ({{readWriteContainerTypeName}}) throws -> Void) throws {
-        try readWriteTransaction { (transaction) in
-            let readWriteCollections = {{readWriteContainerTypeName}}(transaction: transaction, collections: self.collections)
+    {{accessibility}}func readWrite(closure: {{readWriteContainerTypeName}} throws -> Void) throws {
+        try readWriteTransaction { transaction, collections in
+            let readWriteCollections = {{readWriteContainerTypeName}}(transaction: (transaction as! ReadWriteTransaction<{{containerTypeName}}>))
             try closure(readWriteCollections)
         }
     }
 }
+

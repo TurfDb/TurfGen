@@ -117,6 +117,10 @@ public class ClassSubstructure: CustomDebugStringConvertible {
         return rawSubstructure["key.usr"] as! String
     }
 
+    public var typename: String {
+        return rawSubstructure["key.typename"] as! String
+    }
+
     public var runtimeName: String {
         return rawSubstructure["key.runtime_name"] as! String
     }
