@@ -40,6 +40,24 @@ extension {{containerTypeName}}: {{collectionsContainerProtocolName}} { }
     }
 }
 
+{{accessibility}}class Safe{{readWriteContainerTypeName}}: {{readOnlyContainerTypeName}} {
+
+    {{accessibility}}lazy var readWrite: {{readWriteContainerTypeName}} = {
+        [unowned self] in
+            return {{readWriteContainerTypeName}}(transaction: self.readWriteTransaction)
+        }()
+
+    // MARK: Object lifecycle
+
+    private let readWriteTransaction: ReadWriteTransaction<{{containerTypeName}}>
+
+    private init(transaction: ReadWriteTransaction<{{containerTypeName}}>) {
+        self.readWriteTransaction = transaction
+        super.init(transaction: transaction)
+    }
+}
+
+
 extension Connection where Collections: {{collectionsContainerProtocolName}} {
     {{accessibility}}func readOnly(closure: {{readOnlyContainerTypeName}} -> Void) throws {
         try readTransaction { transaction, collections in
@@ -48,9 +66,9 @@ extension Connection where Collections: {{collectionsContainerProtocolName}} {
         }
     }
 
-    {{accessibility}}func readWrite(closure: {{readWriteContainerTypeName}} throws -> Void) throws {
+    {{accessibility}}func readWrite(closure: Safe{{readWriteContainerTypeName}} throws -> Void) throws {
         try readWriteTransaction { transaction, collections in
-            let readWriteCollections = {{readWriteContainerTypeName}}(transaction: (transaction as! ReadWriteTransaction<{{containerTypeName}}>))
+            let readWriteCollections = Safe{{readWriteContainerTypeName}}(transaction: (transaction as! ReadWriteTransaction<{{containerTypeName}}>))
             try closure(readWriteCollections)
         }
     }
